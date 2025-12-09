@@ -1,0 +1,42 @@
+/* Estilos para el menú superior */
+#menu {
+    background-color: #5f7c5d;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+.topnav {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: #5f7c5d;
+}
+
+.topnav li {
+    display: inline;
+    margin: 0 10px;
+  
+}
+
+.topnav a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 16px;
+    transition: color 0.3s; /* Transición de color al pasar el cursor */
+}
+
+.topnav a:hover {
+    color:#ffaf59; /* Color más claro al pasar el cursor */
+}
+
+.topnav a.active {
+    font-weight: bold;
+}
+h2 {
+    font-size: 24px; /* Tamaño de fuente elegante */
+    /* color: #0070f3; Color de texto atractivo */
+    margin-bottom: 20px;
+}

@@ -1,0 +1,765 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    /* background-color: #f0f0f0; */
+    text-align: center;
+   
+   
+}
+
+
+
+/************************************************************************************
+MEDIA QUERIES
+*************************************************************************************/
+		/* para 980px o menos */
+		@media screen and (max-width: 980px) {
+			#container {
+				width: 96%;
+			}
+
+			#section {
+				width: 60%;
+			}
+
+			#sidebar {
+				width: 30%;
+			}
+		}
+
+		/* para 700px o menos */
+		@media screen and (max-width: 700px) {
+			#header {
+				height: auto;
+			}
+
+			#section {
+				width: auto;
+				float: none;
+			}
+
+			#sidebar {
+				width: auto;
+				float: none;
+			}
+		}
+
+		/* para 480px o menos */
+		@media screen and (max-width: 480px) {
+
+			h1 {
+				font-size: 24px;
+			}
+
+			#sidebar {
+				display: none;
+			}
+
+        }
+        
+/* h2 {
+    transition: font-size 300ms ease-out;
+    font-size: 10vw;
+    color: #fff;
+    text-align: center;    
+    background: -webkit-linear-gradient(45deg, #09009f, #00ff95 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+   -webkit-box-reflect: below 5px linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4)); 
+  } */
+  
+  /* @media (min-width: 1000px) {
+    h2 {
+      font-size: 10.5rem;
+    
+    } */
+#container {
+    background-color: #ffffff84;
+    width: 95%;
+    margin: 10px auto;
+    padding: 10px;
+    border-radius: 2px;
+    text-align: center;
+    z-index: 100;
+    
+}
+
+/* #header {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    position: sticky;
+    z-index: 3;
+    top: 0;
+   
+} */
+
+/* #footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-radius: 2px;
+} */
+
+.encabezado{
+    text-align: center;
+}
+.encabezado h2,h1{
+    text-align: center;
+  
+    color: #2C4D32;
+} 
+
+
+
+.encabezado h1{
+    font-family: 'Quicksand', sans-serif;
+    font-size: 12PX;
+}
+
+
+
+/* Estilos para la imagen principal */
+.image-container {
+    text-align:center ; /* Centra la imagen horizontalmente */
+    max-width: 100%; /* Asegura que la imagen no sea más ancha que su contenedor */
+}
+
+.main-image {
+  width: 100%; /* Asegura que la imagen no sea más ancha que su contenedor */
+    height: auto; /* Permite que la altura se ajuste automáticamente */
+    border-radius: 02px;
+}
+
+
+/* Estilos para secciones y productos */
+#content {
+    padding: 20px;
+    
+}
+
+#intro {
+    background-color: #e6e6e6;
+    padding: 20px;
+    margin-top: 20px;
+    
+}
+#apartado{
+    margin-top: 20px;
+    padding: 20px;
+    background-color:#e6e6e6;
+    border-radius: 5px;
+}
+
+#apartado p{
+    margin-top: 30px;
+    font-family: 'Quicksand', sans-serif;
+   font-size: larger;
+   text-align: justify;
+}
+
+#search-bar {
+    text-align: center;
+    margin: 20px 0;
+}
+
+#search-input {
+    padding: 10px;
+    width: 300px;
+}
+
+#search-button {
+    background-color: #8D603F;;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+
+#productos {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.producto {
+    border: 1px solid #ccc;
+    margin: 10px;
+    padding: 20px;
+    text-align: center;
+    max-width: 400px;
+}
+
+.producto img {
+    max-width: 100%;
+    height: auto;
+    width: 300px;
+}
+
+.producto h3 {
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+.producto p {
+    font-size: 16px;
+    margin: 10px 0;
+}
+
+.producto button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.producto button:hover {
+    background-color: #555;
+}
+.hidden {
+    display: none;
+}
+
+
+/* Estilos para los productos */
+#products {
+    margin-top: 20px;
+    overflow: auto; /* Añade un "clearfix" para evitar que los productos se amontonen */
+}
+
+.product {
+    width: 48%; /* Se reduce el ancho para que quepan dos productos en una fila */
+    float: left;
+    margin: 1%; /* Espacio entre los productos */
+    padding: 10px;
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    box-sizing: border-box; /* Incluye el relleno y el borde en el ancho y alto del elemento */
+    border-radius: 05px;
+}
+
+.product img {
+    max-width: 100%; /* La imagen no se saldrá de su contenedor */
+    height: auto; /* La altura se ajustará automáticamente */
+    border-radius: 02px;
+}
+
+.product h3 {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.product p {
+    color: #555;
+}
+
+
+/* Estilos para el logo */
+.logo {
+    max-width: 100px; /* Ajusta el tamaño */
+    height: auto;
+    margin: 5px; /* Ajusta el margen  */
+    float: left;
+    border-radius: 2px;
+}
+
+
+/* Estilos para el encabezado */
+#header {
+    
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px; 
+   
+}
+
+
+  
+
+section{
+    border-radius: 02px;
+    width: 95%;
+}
+a,h1,h2,p {
+    font-family: 'Quicksand', sans-serif;
+}
+
+/* Estilos personalizados para la página de contacto */
+#contact-info {
+    margin: 20px;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+  /* Estilos para el botón flotante del carrito */
+  #cart-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color:#8D603F;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Estilos para el botón "Eliminar" en el carrito */
+#cart-items button {
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+/* Estilos para los botones "+" y "-" */
+.plus, .minus {
+    background-color: rgb(40, 64, 87);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+/* Estilos para la cantidad */
+.quantity {
+    font-weight: bold;
+    font-size: 18px;
+    margin: 0 5px;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+/* .encabezado {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 100px;
+} */
+
+.logo {
+    width: 100px;
+    height: 100px;
+}
+
+h1 {
+    font-size: 32px;
+}
+
+#menu {
+    background-color:#2C4D32;
+    text-align: center;
+}
+
+.topnav {
+    list-style: none;
+    padding: 0;
+}
+
+.topnav li {
+    display: inline;
+    margin: 10px;
+}
+
+.topnav a {
+    text-decoration: none;
+    color: #fff;
+    /* font-weight: bold; */
+    font-size: 18px;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+form {
+    background-color: #fff;
+    padding: 40px;
+    padding-right: 55px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+input[type="submit"] {
+    background-color: #333;
+    color: #fff;
+    font-size: 18px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #555;
+}
+
+/* Estilos para el footer */
+/* #footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+} */
+
+#footer h2 {
+    font-size: 20px;
+    margin: 5px 0;
+}
+
+#footer p {
+    margin: 5px 0;
+}
+
+/* Estilos para la caja de inicio de sesión */
+.login-container {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 5px 0px 10px rgba(0, 0, 0, 0.2);
+    margin: 20px auto;
+    width: 70%;
+    max-width: 400px;
+    text-align: center;
+}
+
+nav a:hover {
+    color: #CC9B6F;
+}
+#language-select {
+    background-color:#5F7C5D;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: 'Quicksand', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+#language-select:hover {
+
+    color: #fff;
+}
+.container {
+    padding: 20px;
+}
+
+/* Mensaje de bienvenida despues de registrarse */
+
+.success-message {
+    background-color: var(--color1); /* Fondo  */
+    color: #fff; /* Texto blanco */
+    padding: 10px; /* Espaciado interno */
+    text-align: center; /* Centrar el texto */
+    font-size: 18px; /* Tamaño de fuente */
+    border-radius: 5px; /* Borde redondeado */
+    display: none; /* Inicialmente oculto */
+}
+
+/* Estilo para el mensaje al pasar el cursor */
+.success-message:hover {
+    background-color: #58351A; /* Color ligeramente más oscuro al pasar el cursor */
+}
+#container {
+        text-align: center; /* Centra los elementos en el contenedor */
+}
+    
+#header {
+   background-color: #f0f0f0; /* Establece un fondo gris claro al encabezado */
+   padding: 20px; /* Añade un espacio alrededor del encabezado */
+}
+   
+.logo {
+  max-width: 100%; /* Ajusta la imagen para que no supere el ancho del contenedor */
+   height: auto; /* Mantiene la proporción de aspecto original de la imagen */
+}
+h1 {
+    margin-top: 10px; /* Añade un espacio superior al título */
+}
+
+
+
+/* Estilos para el botón flotante */
+.floating-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #A5B092;
+    color: #fff;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
+}
+
+.floating-button:hover {
+    background-color: #A5B092;
+}
+
+/* Estilos para el botón flotante */
+.floating-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #A5B092;
+    color: #fff;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
+    text-decoration: none; /* Para eliminar la subrayado del enlace */
+    display: flex; /* Para alinear el icono y el texto horizontalmente */
+    align-items: center; /* Para centrar verticalmente el icono y el texto */
+}
+
+.floating-button:hover {
+    background-color: #c7d8a7;
+}
+
+/* Estilos para el icono */
+.icon {
+    width: 1em; /* Tamaño del icono igual al tamaño de la fuente (16px) */
+    height: 1em;
+    margin-right: 10px; /* Espacio entre el icono y el texto */
+}
+
+
+
+/* Estilos para el botón flotante */
+.floating-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999; /* Asegura que esté por encima de otros elementos */
+  }
+
+  .floating-button button {
+    background-color: #58351A; /* Color de fondo del botón */
+    color: #fff; /* Color del texto */
+    border: none;
+    border-radius: 50%; /* Botón circular */
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+
+  .floating-button button:hover {
+    background-color: #754825; /* Cambia el color de fondo al pasar el mouse sobre el botón */
+  }
+
+
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+form {
+    background-color: #fff;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 40px;
+    padding-right: 55px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+textarea {
+    height: 120px;
+}
+
+input[type="submit"] {
+  text-align: center;
+  background-color:#2C4D32;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  margin: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 17px;
+  width: 70%;
+}
+
+input[type="submit"]:hover {
+    background-color: #5F7C5D;
+}
+
+/* carrucel-------------------------- */
+
+
+
+
+/*Inicia cambio de estilo de scroll bar*/
+::-webkit-scrollbar{
+    background: #d4d4d4;
+    width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #A5B092; 
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b3b3b3;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+}
+::-webkit-scrollbar-thumb:active {
+  background-color: #999999;
+}
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+/*Finaliza cambio de estilo scroll bar*/
+/*CAROUSEL al contenedor padre se le deja el tamaño del 100%*/
+#carousel{
+  width:100%;
+  height: 100%;
+  margin-top: 5%;
+margin-bottom: 5%;
+ }
+/*en la clase del carousel se realiza independiente para que ahi pueda agregar el escroll X*/
+.carousel{
+ overflow-x:scroll;
+}
+/*el texto ya esta centrado ya que se le dio el ancho del 100% al contenedor padre*/
+#carousel p{  
+  color: #58351A; 
+  font-family:sans-serif;
+  font-size:20px;
+  text-align:center;   
+  margin-top: 3%;
+  margin-bottom: 40px;  
+}
+/* se le da el tamaño que se desea para la visulizacion de las imagenes ya que en el contenedor de la clase de carousel es donde estara creado el scroll*/
+#carousel .gallery {
+  display: flex;
+  flex-direction: row;
+  width:2500px;
+  height: 70vh;
+}
+
+#carousel .item {
+  flex: 1;
+  height: 100%;
+  background-position: center;
+  background-size: cover;
+  background-repeat: none;
+  transition: flex 0.8s ease;
+  }
+
+#carousel .item:hover{
+    flex: 15%;
+  }
+
+/*fotos*/
+
+#carousel .item-1 { 
+  background-image: url('https://th.bing.com/th/id/OIP.u79QWnbaTbvjqvlg0uqLRAHaGM?pid=ImgDet&rs=1');
+}
+#carousel .item-2 { 
+  background-image: url('https://i.pinimg.com/736x/6b/be/02/6bbe02c59d926fe74f26746400cd2084.jpg');
+}
+#carousel .item-3 { 
+  background-image: url('https://th.bing.com/th/id/R.204e8b7bfedefc1e0d448f8aab3a83c1?rik=847wfX2WDyS5VA&pid=ImgRaw&r=0');
+}
+#carousel .item-4 { 
+  background-image: url('https://th.bing.com/th/id/R.7d92f0ff35f4faadbdf36dabee2e50c7?rik=MbB4zMjjf4%2fP1A&pid=ImgRaw&r=0');
+}
+#carousel .item-5 { 
+  background-image: url('https://th.bing.com/th/id/OIP.GBhUOg9u6aYlaHUv1N3q-gAAAA?pid=ImgDet&rs=1');
+}
+#carousel .item-6 { 
+  background-image: url('https://th.bing.com/th/id/R.0b41585b1f675da4c1e6b148d992ad17?rik=VzEYW3yhZWR%2fcg&pid=ImgRaw&r=0');
+}
+#carousel .item-7 { 
+  background-image: url('https://i.ibb.co/hg7mHLs/19c.jpg');
+}
+#carousel .item-8 { 
+  background-image: url('https://i.ibb.co/Zxj8srB/111c.jpg');
+}
+
+#carousel .item-9 { 
+  background-image: url('https://i.ibb.co/Yt7HhvX/10c.jpg');
+}
+#carousel .item-10 { 
+  background-image: url('https://i.ibb.co/h7ZHQTc/333c.jpg');
+}
+#carousel .item-11 { 
+  background-image: url('https://i.ibb.co/dJZ5JW4/18c.jpg');
+}
+#carousel .item-12 { 
+  background-image: url('https://i.ibb.co/1LM3t5n/5c.jpg');
+}
+/*se agrego el cursos para que sepa que esta en cada imagen*/
+.gallery .item:hover{
+  cursor:pointer;
+}
+
+
