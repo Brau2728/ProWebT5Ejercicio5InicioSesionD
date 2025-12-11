@@ -1,123 +1,163 @@
-<?php session_start();
-//validamos si se ha hecho o no el inicio de sesion correctamente
-//si no se ha hecho la sesion nos regresará a login.php
-    if(!isset($_SESSION['usuario']) || !isset($_SESSION['tipo']) ){
-        echo "Usuario no Logueado";
-        header('Location: login.php'); 
-        exit();
-    }
+<?php
+$page = 'usuarios'; // Para mantener activa la pestaña de Usuarios
+session_start();
+
+// Validación de sesión
+if (!isset($_SESSION['usuario']) || !isset($_SESSION['tipo'])) {
+    header('Location: login.php');
+    exit();
+}
+
+include("php/conexion.php");
+
+// Consulta de usuarios
+$sql = "SELECT * FROM usuarios ORDER BY id_usuario ASC";
+// Usamos la función db_query (asegúrate que esté en conexion.php, si no usa mysqli_query)
+$result = db_query($sql);
 ?>
+
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-    <meta name="description" content="Sistemas computacionales">
-    <meta name="keywords" content="MySql, conexión, Wamp">
-    <meta name="author" content="Ramirez Erik, Sistemas">
-
-
-  <title> Amin-Usuarios_Contraseñas - Idealiza</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'>
-  <link rel="stylesheet" href="css/estilos_admin.css">
-  <link rel="stylesheet" href="css/menu1.css">
-  <link rel="stylesheet" href="estilos/Wave2.css">
-  <link rel="icon" href="Img/Icons/logo-idealisa.ico" type="image/png">
-    <!-- Fuente Personalizada -->
-   <link rel="stylesheet" href="css/menu.css">
-    <?php include("php/conexion.php"); ?>
-</head>
-
-<body>
-  
-<article>
-<?php include('php/header_admin.php');?>
-        <!-- ************  MENU  *************** -->
-        <?php include('php/menu_admin.php');?>
+    <title>Contraseñas - Idealiza</title>
     
-    <div id="content">
-        <div id="section">
-            <!-- ************  CONTENIDO  *************** -->
-            <h1>Menu de Usuarios-Contrsaeñas</h1>
-            <br>
-  
-            
-            <!-- <p>Buscar Usuario <input type="text"><button>Buscar</button></p> -->
-            <!-- <p><a href="adm_usuario_registrar.php" class="button2">Crear usuario</a></p>
-            <br> -->
-            <br>
-            <p><a href="adm_usuario.php" class="button2">Regresar a los registros</a></p>
-            <br>
-            <h2>Usuarios Existentes y Contrseñas</h2>
-            <?php
-            //invocar la funcion select y la tabla
-            $result = select("usuarios");
-            // Realizamos un bucle que muestre el resultado
-            ?>
-        <table border=1 align="center">
-          <thead>
-            <td>Id</td>
-            <td>Nombre</td>
-            <td>Apellido</td>
-            <td>Contraseña</td>
-            <td>Acciones</td>
-          </thead>
-          <?php
-          if (mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_object($result)) {
-          ?>
-              <tr>
-                
-                <td><?php echo $row->id_usuario; ?></td>
-                <td><?php echo $row->usu_nom; ?></td>
-                <td><?php echo $row->usu_ap_pat; ?></td>
-                <td><?php echo $row->usu_password; ?></td>
-                <td>
-                  <a href="adm_usuario_modificar.php?id=<?php echo $row->id_usuario; ?>" class="button">Modificar</a> /                  
-                  <a href="adm_usuario_eliminar.php?id=<?php echo $row->id_usuario; ?>" onclick="return confirmarEliminacion()" class="buttonDelete">Eliminar</a> 
+    <link rel="stylesheet" href="estilos/Wave2.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-                </td>
-              </tr>
-          <?php
+    <style>
+        body { font-family: 'Quicksand', sans-serif; background-color: #F0F2F5; padding-bottom: 100px; }
+        
+        .container-pass { max-width: 1000px; margin: 40px auto; padding: 20px; }
 
-            }
-          } else {
-            echo "no hay ningun registro";
-          }
-          ?>
-        </table>
-            
-        </div>            
+        /* ENCABEZADO */
+        .header-actions {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;
+            background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .page-title { margin: 0; color: #1565C0; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        
+        .btn-back {
+            background: #ECEFF1; color: #546E7A; padding: 10px 20px; border-radius: 30px;
+            text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 5px; transition: 0.2s;
+        }
+        .btn-back:hover { background: #CFD8DC; color: #37474F; }
+
+        /* TABLA MODERNA */
+        .table-container {
+            background: white; border-radius: 16px; overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #eee;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        
+        thead { background: #1565C0; color: white; }
+        th { padding: 15px; text-align: left; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; }
+        
+        td { padding: 15px; border-bottom: 1px solid #eee; color: #444; vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background-color: #F5F9FF; }
+
+        /* ESTILOS DE CELDA */
+        .password-text {
+            font-family: 'Roboto Mono', monospace; background: #FFF3E0; color: #E65100;
+            padding: 4px 8px; border-radius: 4px; border: 1px solid #FFE0B2; font-weight: 500;
+        }
+        
+        .user-name { font-weight: bold; color: #333; }
+        .user-role { font-size: 0.8rem; color: #888; }
+
+        /* BOTONES DE ACCIÓN */
+        .actions-cell { display: flex; gap: 8px; }
+        .btn-icon {
+            width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            text-decoration: none; transition: 0.2s;
+        }
+        .btn-edit { background: #E3F2FD; color: #1565C0; }
+        .btn-edit:hover { background: #2196F3; color: white; }
+        
+        .btn-del { background: #FFEBEE; color: #D32F2F; }
+        .btn-del:hover { background: #EF5350; color: white; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .table-container { overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <?php include("php/encabezado_madera.php"); ?>
+    <?php include("php/barra_navegacion.php"); ?>
+
+    <div class="container-pass">
+        
+        <div class="header-actions">
+            <h1 class="page-title"><span class="material-icons">vpn_key</span> Accesos y Contraseñas</h1>
+            <a href="adm_usuarios.php" class="btn-back">
+                <span class="material-icons">arrow_back</span> Volver a Usuarios
+            </a>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Contraseña Actual</th>
+                        <th style="text-align: right;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if ($result && mysqli_num_rows($result) > 0) {
+                        while ($row = mysqli_fetch_object($result)) {
+                    ?>
+                    <tr>
+                        <td>#<?php echo $row->id_usuario; ?></td>
+                        <td>
+                            <div class="user-name"><?php echo $row->usu_nom . ' ' . $row->usu_ap_pat; ?></div>
+                            <div class="user-role"><?php echo $row->usu_tipo; ?></div>
+                        </td>
+                        <td>
+                            <span class="password-text"><?php echo $row->usu_password; ?></span>
+                        </td>
+                        <td>
+                            <div class="actions-cell" style="justify-content: flex-end;">
+                                <a href="adm_usuario_modificar.php?id=<?php echo $row->id_usuario; ?>" class="btn-icon btn-edit" title="Modificar">
+                                    <span class="material-icons" style="font-size:18px;">edit</span>
+                                </a>
+                                <a href="#" onclick="confirmarBorrado(<?php echo $row->id_usuario; ?>)" class="btn-icon btn-del" title="Eliminar">
+                                    <span class="material-icons" style="font-size:18px;">delete</span>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php
+                        }
+                    } else {
+                        echo "<tr><td colspan='4' style='text-align:center; padding:20px;'>No hay usuarios registrados</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+
     </div>
-    <div class="wave wave1"> </div>
-    <div class="wave wave2"> </div>
-    <div class="wave wave3"> </div>
-    <div class="wave wave4"> </div>
-     </article>
-    <!-- ************  FOOTER  *************** -->
-    <?php include("php/footer.php"); ?>
-</div>
-<script>
-  function confirmarEliminacion() {
-    if (confirm("¿Realmente desea eliminar el registro?")) {
-      return true;
-    }
-    return false;
-  }
-</script>
 
- <!-- Extencion para los icnos de redes sociales-->
- <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-     <!-- Extencion para los icnos de redes sociales-->
-     
+    <?php include("php/olas.php"); ?>
+
+    <script>
+        function confirmarBorrado(id) {
+            if(confirm("¿Estás seguro de eliminar este usuario?")) {
+                window.location.href = "adm_usuario_eliminar.php?id=" + id;
+            }
+        }
+    </script>
+
 </body>
 </html>

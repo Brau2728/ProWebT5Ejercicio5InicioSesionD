@@ -1,121 +1,121 @@
-<?php session_start();
-//validamos si se ha hecho o no el inicio de sesion correctamente
-//si no se ha hecho la sesion nos regresará a login.php
-    if(!isset($_SESSION['usuario']) || !isset($_SESSION['tipo']) ){
-        echo "Usuario no Logueado";
-        header('Location: login.php'); 
-        exit();
-    }
+<?php
+$page = 'modelos'; // Mantiene iluminado el menú "Modelos"
+session_start();
+
+if (!isset($_SESSION['usuario']) || !isset($_SESSION['tipo'])) {
+    header('Location: login.php');
+    exit();
+}
+
+include("php/conexion.php");
 ?>
+
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-    <meta name="description" content="Sistemas computacionales">
-    <meta name="keywords" content="MySql, conexión, Wamp">
-    <meta name="author" content="Ramirez Erik, Sistemas">
-
- 
-  <title> Amin-Usuarios-Modificar - Idealiza</title>
-  <link rel="stylesheet" href="css/perfiles.css">
-   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'>
-  <link rel="stylesheet" href="css/estilos_admin.css">
-  <link rel="stylesheet" href="css/menu1.css">
-  <link rel="stylesheet" href="estilos/Wave2.css">
-  <link rel="icon" href="Img/Icons/logo-idealisa.ico" type="image/png">
-    <!-- Fuente Personalizada -->
-   <link rel="stylesheet" href="css/menu.css">
-    <?php include("php/conexion.php"); ?>
-</head>
-
-<body>
-<article>
-    <?php include('php/header_admin.php');?>
-    <?php include('php/menu_admin.php');?>
+    <title>Registrar Modelo - Idealiza</title>
     
-    <div id="">
-        <div id="">
-            <?php
-            $var_id = $_GET['id'];
-            echo "Registro a modificar: $var_id";
-            $result = select_where("modelos", "id_modelos = $var_id");
+    <link rel="stylesheet" href="estilos/Wave2.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-            if (mysqli_num_rows($result) > 0) {
-                while ($row = mysqli_fetch_object($result)) {
-            ?>
-                    <!-- Contenido para modificar el modelo -->
-                    <h1>Modificando modelo</h1>
-                    <form id="form1" name="form1" method="post" action="adm_modelos_modificar_modelos.php" style="text-align:center;" onsubmit="return validarForm(this);">
-                        <input name="txt_id" type="hidden" value="<?php echo $row->id_modelos; ?>" />
-                        
-                        <!-- Campos para modificar nombre, descripción, imagen, estatus y color del modelo -->
-                        <p><label for="txt_Nombre">Nombre</label></p><br>
-                        <input type="text" name="txt_Nombre" id="txt_Nombre" value="<?php echo $row->modelos_nombre; ?>" />
-                        <br><br>
-                        <p><label for="txt_Descripcion">Descripción</label></p><br>
-                        <textarea name="txt_Descripcion" id="txt_Descripcion"><?php echo $row->modelos_descripcion; ?></textarea>
-                        <br><br>
-                        <!-- <p><label for="modelos_precio">Precio</label></p><br>
-<p><input type="text" name="modelos_precio" id="modelos_precio" value="<?php echo $row->modelos_precio; ?>" /></p>
+    <style>
+        /* PALETA DE COLORES PERSONALIZADA
+           Marrón: #94745c
+           Verde Claro: #cedfcd
+           Verde Oscuro: #144c3c
+           Gris Verdoso: #5d6b62
+        */
 
-<br> -->
-                        <p><label for="url_imagen">URL de la imagen</label></p><br>
-                        <input name="url_imagen" type="text" value="<?php echo $row->modelos_imagen; ?>" />
-                        <br><br>
-                        
-                        <br>
-                        <br>
-                        
-                        <!-- Botón de Actualizar -->
-                        <p><button name="btn_actualizar" id="btn_actualizar" class="button">Actualizar</button></p>
-                    </form>
-            <?php
-                }
-            } else {
-                echo "No hay ningún registro de modelos";
-            }
-            ?>
-        </div>
+        body { font-family: 'Quicksand', sans-serif; background-color: #F0F2F5; padding-bottom: 100px; }
+        
+        .form-wrapper {
+            background: white; max-width: 700px; margin: 40px auto; padding: 40px;
+            border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            /* Borde superior Marrón Bronce */
+            border-top: 6px solid #94745c; 
+        }
+
+        h2 { color: #144c3c; text-align: center; margin-bottom: 30px; font-weight: 700; font-size: 1.8rem; }
+        
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-weight: bold; color: #5d6b62; margin-bottom: 8px; font-size: 0.95rem; }
+        
+        .form-control {
+            width: 100%; padding: 12px; border: 1px solid #cedfcd; border-radius: 8px;
+            font-family: inherit; font-size: 1rem; box-sizing: border-box; transition: 0.3s;
+            color: #333; background-color: #FAFAFA;
+        }
+        
+        /* Foco Marrón al escribir */
+        .form-control:focus { 
+            border-color: #94745c; outline: none; 
+            box-shadow: 0 0 0 3px rgba(148, 116, 92, 0.1); 
+            background-color: #fff;
+        }
+
+        /* Área de texto más alta */
+        textarea.form-control { min-height: 100px; resize: vertical; }
+
+        /* Botones */
+        .btn-submit {
+            background: #144c3c; /* Verde Oscuro */
+            color: white; border: none; width: 100%; padding: 15px;
+            border-radius: 30px; font-size: 1.1rem; font-weight: bold; cursor: pointer;
+            transition: 0.3s; margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .btn-submit:hover { background: #0f382c; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(20, 76, 60, 0.3); }
+
+        .btn-back {
+            display: inline-flex; align-items: center; gap: 5px; text-decoration: none;
+            color: #748579; font-weight: bold; margin-bottom: 25px; transition: 0.3s;
+        }
+        .btn-back:hover { color: #144c3c; transform: translateX(-5px); }
+
+        @media (max-width: 600px) {
+            .form-wrapper { padding: 25px; margin: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <?php include("php/encabezado_madera.php"); ?>
+    <?php include("php/barra_navegacion.php"); ?>
+
+    <div class="form-wrapper">
+        <a href="adm_modelos.php" class="btn-back">
+            <span class="material-icons">arrow_back</span> Volver al Catálogo
+        </a>
+
+        <h2>Registrar Nuevo Modelo</h2>
+
+        <form method="POST" action="adm_modelos_registrar_modelos.php">
+            
+            <div class="input-group">
+                <label>Nombre del Modelo:</label>
+                <input type="text" name="modelos_nombre" class="form-control" placeholder="Ej. Silla Imperial" required>
+            </div>
+
+            <div class="input-group">
+                <label>Descripción:</label>
+                <textarea name="modelos_descripcion" class="form-control" placeholder="Detalles del mueble, materiales, medidas..."></textarea>
+            </div>
+
+            <div class="input-group">
+                <label>URL de la Imagen:</label>
+                <input type="text" name="modelos_imagen" class="form-control" placeholder="https://...">
+            </div>
+
+            <button type="submit" name="btn_guardar" class="btn-submit">
+                <span class="material-icons">save</span> Guardar Modelo
+            </button>
+
+        </form>
     </div>
-    <!-- ************  FOOTER  *************** -->
-   
-    <div class="wave wave1"> </div>
-    <div class="wave wave2"> </div>
-    <div class="wave wave3"> </div>
-    <div class="wave wave4"> </div>
-     </article> <?php include("php/footer.php"); ?>
-<script src="js/validacion.js"></script>
 
-<!-- Extencion para los icnos de redes sociales-->
-<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-     <!-- Extencion para los icnos de redes sociales-->
-
-
-     <script>
-function mostrarPuesto(select) {
-    var campoPuesto = document.getElementById("campoPuesto");
-    if (select.value === "empleado") {
-        campoPuesto.style.display = "block";
-    } else {
-        campoPuesto.style.display = "none";
-        document.getElementById("emp_puesto").value = ""; // Establecer el valor como vacío si no es empleado
-    }
-}
-</script>
-<!-- Extencion para los icnos de redes sociales-->
-<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-     <!-- Extencion para los icnos de redes sociales-->
+    <?php include("php/olas.php"); ?>
 
 </body>
 </html>

@@ -1,172 +1,236 @@
-<?php session_start();
-//validamos si se ha hecho o no el inicio de sesion correctamente
-//si no se ha hecho la sesion nos regresará a login.php
-    if(!isset($_SESSION['usuario']) || !isset($_SESSION['tipo']) ){
-        echo "Usuario no Logueado";
-        header('Location: login.php'); 
+<?php
+$page = 'usuarios';
+session_start();
+
+if (!isset($_SESSION['usuario']) || !isset($_SESSION['tipo'])) {
+    header("Location: login.php");
+    exit();
+}
+
+include("php/conexion.php");
+
+// 1. CONEXIÓN SEGURA (Puente)
+$db_host_local = 'localhost';
+$db_user_local = 'root';
+$db_pass_local = '';
+$db_name_local = 'equipo';
+$db_port_local = '3306';
+
+$link_seguridad = mysqli_connect($db_host_local, $db_user_local, $db_pass_local, $db_name_local, $db_port_local);
+if (!$link_seguridad) { die("Error de conexión local."); }
+
+// 2. OBTENER DATOS DEL USUARIO
+if (isset($_GET['id'])) {
+    $id_usuario = mysqli_real_escape_string($link_seguridad, $_GET['id']);
+    $sql = "SELECT * FROM usuarios WHERE id_usuario = '$id_usuario'";
+    $result = mysqli_query($link_seguridad, $sql);
+    
+    if ($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_object($result);
+    } else {
+        echo "<script>alert('Usuario no encontrado'); window.location='adm_usuarios.php';</script>";
         exit();
     }
+} else {
+    header("Location: adm_usuarios.php");
+    exit();
+}
 ?>
+
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Modificar Usuario - Idealiza</title>
+    
+    <link rel="stylesheet" href="estilos/Wave2.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <meta name="description" content="Sistemas computacionales">
-    <meta name="keywords" content="MySql, conexión, Wamp">
-    <meta name="author" content="Ramirez Erik, Sistemas">
+    <style>
+        body { font-family: 'Quicksand', sans-serif; background-color: #F0F2F5; padding-bottom: 100px; }
+        
+        .form-wrapper {
+            background: white; max-width: 800px; margin: 40px auto; padding: 40px;
+            border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            /* Color Naranja de la imagen */
+            border-top: 5px solid #EF6C00; 
+        }
 
- 
-  <title> Amin-Usuarios-Modificar - Idealiza</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'>
-  <link rel="stylesheet" href="css/estilos_admin.css">
-  <link rel="stylesheet" href="css/menu1.css">
-  <link rel="stylesheet" href="estilos/Wave2.css">
-  <link rel="icon" href="Img/Icons/logo-idealisa.ico" type="image/png">
-    <!-- Fuente Personalizada -->
-   <link rel="stylesheet" href="css/menu.css">
-    <?php include("php/conexion.php"); ?>
+        h2 { color: #EF6C00; text-align: center; margin-bottom: 30px; font-weight: 700; }
+        
+        /* Grid */
+        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
+        
+        .input-group { margin-bottom: 5px; }
+        .input-group label { display: block; font-weight: bold; color: #555; margin-bottom: 8px; font-size: 0.9rem; }
+        
+        .form-control {
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;
+            font-family: inherit; font-size: 1rem; box-sizing: border-box; transition: 0.3s;
+        }
+        /* Foco Naranja */
+        .form-control:focus { border-color: #EF6C00; outline: none; box-shadow: 0 0 0 3px rgba(239, 108, 0, 0.1); }
+
+        /* Sección Puesto - Estilo de Alerta Naranja */
+        .highlight-box {
+            background: #FFF3E0; /* Fondo naranja muy claro */
+            padding: 20px; border-radius: 12px; margin: 25px 0;
+            border-left: 5px solid #EF6C00; /* Borde naranja fuerte */
+            display: none; /* Se controla con JS */
+        }
+        .highlight-box label { color: #E65100; /* Texto naranja oscuro */ }
+
+        /* Botones */
+        .btn-submit {
+            background: #EF6C00; /* Botón Naranja */
+            color: white; border: none; width: 100%; padding: 15px;
+            border-radius: 30px; font-size: 1.1rem; font-weight: bold; cursor: pointer;
+            transition: 0.3s; margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .btn-submit:hover { background: #E65100; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(239, 108, 0, 0.3); }
+
+        .btn-back {
+            display: inline-flex; align-items: center; gap: 5px; text-decoration: none;
+            color: #757575; font-weight: bold; margin-bottom: 20px; transition: 0.3s;
+        }
+        .btn-back:hover { color: #EF6C00; transform: translateX(-5px); }
+
+        @media (max-width: 600px) {
+            .input-row { grid-template-columns: 1fr; gap: 10px; }
+            .form-wrapper { padding: 20px; }
+        }
+    </style>
 </head>
 <body>
-  <article>
-<?php include('php/header_admin.php');?>
-        <!-- ************  MENU  *************** -->
-        <?php include('php/menu_admin.php');?>
-        <!-- ************  MENU  *************** -->
-        
-    <div id="content">
-        <div id="section">
-        <?php
-        $var_id = $_GET['id'];
-        echo "Registro a modifica:  $var_id";
-        //invocar la funcion select y la tabla
-        $result = select_where("usuarios", "id_usuario = $var_id");
-        
 
-        if (mysqli_num_rows($result) > 0) {
-          while ($row = mysqli_fetch_object($result)) {
-        ?>
- 
-            <!-- ************  CONTENIDO  *************** -->
-            <h1>Modifcando usuario</h1>
-            <form id="form1" name="form1" method="post" action="adm_usuario_modificar_usuario.php" style="text-align:center;" onsubmit="return validarForm(this);" >
-            <input name="txt_id" type="hidden" value="<?php echo $row->id_usuario; ?>" />
+    <?php include("php/encabezado_madera.php"); ?>
+    <?php include("php/barra_navegacion.php"); ?>
 
-            <p><label for="ema_email">Email </label></p><br>
-            <input name="ema_email" type="email" required onkeyup="javascript:this.value=this.value.toLowerCase();" value="<?php echo $row->usu_email; ?>"/>
+    <div class="form-wrapper">
+        <a href="adm_usuarios.php" class="btn-back">
+            <span class="material-icons">arrow_back</span> Volver a Lista
+        </a>
 
-          <p><label for="txt_Nombre">Nombre </label><br>
-            <input type="text" name="txt_Nombre" id="txt_Nombre" onkeyup="javascript:this.value=this.value.toUpperCase();" value="<?php echo $row->usu_nom; ?>"/>
-          </p>
-          <p><label for="txt_ApPat">Apellido Paterno </label><br>
-            <input type="text" name="txt_ApPat" id="txt_ApPat" onkeyup="javascript:this.value=this.value.toUpperCase();" value="<?php echo $row->usu_ap_pat; ?>"/>
-          </p>
-          <p><label for="txt_ApMat">Apellido Materno </label><br>
-            <input type="text" name="txt_ApMat" id="txt_ApMat" onkeyup="javascript:this.value=this.value.toUpperCase();" value="<?php echo $row->usu_ap_mat; ?>"/>
-          </p>
-          <p>
-            <label for="cal_fecha_nacimiento">Fecha de Nacimiento</label>
-            <input type="date" name="cal_fecha_nacimiento" id="cal_fecha_nacimiento" value="<?php echo $row->usu_fecha_nacimiento; ?>">
-            </p>
-            <!-- <p><label for="lst_Sexo">Sexo</label><br>
-           <input type="radio" id="sexo_femenino" name="lst_Sexo" value="F">
-           <label for="sexo_femenino">Femenino</label><br>
-           <input type="radio" id="sexo_masculino" name="lst_Sexo" value="M">
-           <label for="sexo_masculino">Masculino</label><br>
-           </p> -->
+        <h2>Modificar Usuario</h2>
 
-           <br><p>
-    <label for="lst_Sexo">Sexo</label>
-    <select name="lst_Sexo" id="lst_Sexo">
-        <option value="masculino" <?php if ($row->usu_sexo === 'masculino') echo 'selected'; ?>>masculino</option>
-        <option value="femenino" <?php if ($row->usu_sexo === 'femenino') echo 'selected'; ?>>femenino</option>
-    </select>
-</p>
-<br>
+        <form action="adm_usuario_modificar_usuario.php" method="POST">
+            
+            <input type="hidden" name="txt_id" value="<?php echo $row->id_usuario; ?>">
 
-          <p><label for="lst_Tipo">Tipo de usuario</label>
-            <select name="lst_Tipo" id="lst_Tipo" onchange="mostrarPuesto(this)">
-              
-              <option value="admin" <?php if ($row->usu_tipo === 'admin') echo 'selected'; ?>>admin</option>
-              <option value="supervisor" <?php if ($row->usu_tipo === 'supervisor') echo 'selected'; ?>>supervisor</option>
-              <option value="empleado" <?php if ($row->usu_tipo === 'empleado') echo 'selected'; ?>>empleado</option>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Nombre(s):</label>
+                    <input type="text" name="txt_Nombre" class="form-control" value="<?php echo $row->usu_nom; ?>" onkeyup="this.value=this.value.toUpperCase();" required>
+                </div>
+                <div class="input-group">
+                    <label>Apellido Paterno:</label>
+                    <input type="text" name="txt_ApPat" class="form-control" value="<?php echo $row->usu_ap_pat; ?>" onkeyup="this.value=this.value.toUpperCase();" required>
+                </div>
+            </div>
 
-            </select>
-          </p>
-          
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Apellido Materno:</label>
+                    <input type="text" name="txt_ApMat" class="form-control" value="<?php echo $row->usu_ap_mat; ?>" onkeyup="this.value=this.value.toUpperCase();">
+                </div>
+                <div class="input-group">
+                    <label>Fecha de Nacimiento:</label>
+                    <input type="date" name="cal_fecha_nacimiento" class="form-control" value="<?php echo $row->usu_fecha_nacimiento; ?>" required>
+                </div>
+            </div>
 
-          <div id="campoPuesto" style="display: none;">
-          <br><label style="color: #2C4D32;" for="lst_puesto">Puesto</label>
-          <select name="lst_puesto" id="lst_puesto">
-            <option><?php echo $row->usu_puesto; ?></option>
-            <option value="maquilador">maquilador</option>
-            <option value="armador">armador</option>
-            <option value="barnizador">barnizador</option>
-            <option value="pintor">pintor</option>
-            <option value="adornador">adornador</option>
-        </select>
-    </div>
-    
-    <div>
-    <label for="url_imagen">URL de la imagen</label><br>
-            <input name="url_imagen" type="text" value="<?php echo $row->usu_img; ?>" />
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Sexo:</label>
+                    <select name="lst_Sexo" class="form-control" required>
+                        <option value="masculino" <?php if ($row->usu_sexo === 'masculino') echo 'selected'; ?>>Masculino</option>
+                        <option value="femenino" <?php if ($row->usu_sexo === 'femenino') echo 'selected'; ?>>Femenino</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Tipo de Usuario:</label>
+                    <select name="lst_Tipo" id="lst_Tipo" class="form-control" onchange="mostrarPuesto()" required>
+                        <option value="admin" <?php if ($row->usu_tipo === 'admin') echo 'selected'; ?>>Admin</option>
+                        <option value="supervisor" <?php if ($row->usu_tipo === 'supervisor') echo 'selected'; ?>>Supervisor</option>
+                        <option value="empleado" <?php if ($row->usu_tipo === 'empleado') echo 'selected'; ?>>Empleado</option>
+                        <option value="gerente" <?php if ($row->usu_tipo === 'gerente') echo 'selected'; ?>>Gerente</option>
+                    </select>
+                </div>
+            </div>
 
-         
-    </div>
+            <div id="campoPuesto" class="highlight-box">
+                <div class="input-group">
+                    <label style="font-size:1.1rem;">Puesto de Trabajo:</label>
+                    <select name="lst_puesto" class="form-control" style="font-weight:bold; color:#333;">
+                        <option value="<?php echo $row->usu_puesto; ?>" selected><?php echo $row->usu_puesto; ?> (Actual)</option>
+                        
+                        <optgroup label="Producción">
+                            <option value="maquilador">Maquilador</option>
+                            <option value="armador">Armador / Carpintero</option>
+                            <option value="barnizador">Barnizador</option>
+                            <option value="pintor">Pintor</option>
+                            <option value="adornador">Adornador</option>
+                        </optgroup>
+                        
+                        <optgroup label="Otros">
+                            <option value="terminado">Almacén</option>
+                            <option value="supervisor">Supervisor</option>
+                            <option value="administrador">Administrador</option>
+                        </optgroup>
+                    </select>
+                    <small style="color:#666;">Define en qué lista aparecerá la persona en el Monitor.</small>
+                </div>
+            </div>
 
-          <br><p><label for="pas_password">Password </label><br>
-          <input name="pas_password" type="password" required value="<?php echo $row->usu_password; ?>"/>
-          </p>
-          <p><label for="pas_password2">confirmar Password </label><br>
-          <input name="pas_password2" type="password" required value="<?php echo $row->usu_password; ?>"/>
-          </p>
-          
-          <p><button name="btn_actualizar" id="btn_actualizar" class="button">Actualizar</button></p>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Correo Electrónico:</label>
+                    <input type="email" name="ema_email" class="form-control" value="<?php echo $row->usu_email; ?>" required>
+                </div>
+                <div class="input-group">
+                    <label>URL Foto:</label>
+                    <input type="text" name="url_imagen" class="form-control" value="<?php echo $row->usu_img; ?>">
+                </div>
+            </div>
 
-          <?php
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Contraseña:</label>
+                    <input type="text" name="pas_password" class="form-control" value="<?php echo $row->usu_password; ?>" required>
+                </div>
+                <div class="input-group">
+                    <label>Confirmar Contraseña:</label>
+                    <input type="text" name="pas_password2" class="form-control" value="<?php echo $row->usu_password; ?>" required>
+                </div>
+            </div>
 
-          }
-        } else {
-          echo "no hay ningun registro";
-        }
-        ?>
+            <button type="submit" name="btn_actualizar" class="btn-submit">
+                <span class="material-icons">save</span> Guardar Cambios
+            </button>
+
         </form>
-        </div>            
     </div>
-    <div class="wave wave1"> </div>
-    <div class="wave wave2"> </div>
-    <div class="wave wave3"> </div>
-    <div class="wave wave4"> </div>
-     </article>
-    <!-- ************  FOOTER  *************** -->
-    <?php include("php/footer.php"); ?>
-</div>
-<script src="js/validacion.js"></script>
 
-<!-- Extencion para los icnos de redes sociales-->
-<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-     <!-- Extencion para los icnos de redes sociales-->
+    <?php include("php/olas.php"); ?>
 
+    <script>
+        function mostrarPuesto() {
+            var tipo = document.getElementById("lst_Tipo").value;
+            var caja = document.getElementById("campoPuesto");
+            
+            // Mostrar si es empleado, supervisor o admin (para que aparezcan en el monitor)
+            if (tipo === "empleado" || tipo === "supervisor" || tipo === "admin") {
+                caja.style.display = "block";
+            } else {
+                caja.style.display = "none";
+            }
+        }
 
-     <script>
-function mostrarPuesto(select) {
-    var campoPuesto = document.getElementById("campoPuesto");
-    if (select.value === "empleado") {
-        campoPuesto.style.display = "block";
-    } else {
-        campoPuesto.style.display = "none";
-        document.getElementById("emp_puesto").value = ""; // Establecer el valor como vacío si no es empleado
-    }
-}
-</script>
+        // Ejecutar al cargar para ver el estado inicial
+        window.onload = mostrarPuesto;
+    </script>
+
 </body>
 </html>

@@ -1,108 +1,148 @@
+<?php
+$page = 'inicio'; // Ilumina el menú "Inicio"
+session_start();
 
-<!-- ``-------------------------------------------------- -->
-<!-- ----------Inicio de Administador------------------------- -->
-<!-- ---------------idioma español---------------------------------- -->
+if (!isset($_SESSION['usuario'])) {
+    header("Location: login.php");
+    exit();
+}
 
-<?php session_start();
-//validamos si se ha hecho o no el inicio de sesion correctamente
-//si no se ha hecho la sesion nos regresará a login.php
-    if(!isset($_SESSION['usuario']) || !isset($_SESSION['tipo']) ){
-        echo "Usuario no Logueado";
-        header('Location: login.php'); 
-        exit();
-    }
+include("php/conexion.php");
 ?>
-
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-  <meta name="description" content="Sistemas computacionales">
-  <meta name="keywords" content="MySql, conexión, Wamp">
-  <meta name="author" content="Ramirez Erik, Sistemas">
- 
-
-  <title> Amin-Inicio - Idealiza</title>
- 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Principal - Idealiza</title>
     
+    <link rel="stylesheet" href="estilos/Wave2.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
+    <style>
+        /* PALETA DE COLORES PERSONALIZADA */
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #F0F2F5;
+            margin: 0;
+            padding-bottom: 100px;
+        }
 
+        .container-admin {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
 
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'>
-  <link rel="stylesheet" href="css/estilos_admin.css">
-  <link rel="stylesheet" href="css/menu1.css">
-  <link rel="stylesheet" href="estilos/Wave2.css">
-  <link rel="icon" href="Img/Icons/logo-idealisa.ico" type="image/png">
-    <!-- Fuente Personalizada -->
-   <link rel="stylesheet" href="css/menu.css">
+        /* --- LOGO CENTRAL (Sustituye a la cápsula de bienvenida) --- */
+        .logo-header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 20px;
+            /* Opcional: fondo blanco suave detrás del logo */
+            /* background: white; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); */
+        }
+
+        .img-logo-principal {
+            max-width: 450px; /* Tamaño del logo */
+            width: 100%;
+            height: auto;
+            display: inline-block;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); 
+        }
+
+        /* GRID DE MENÚ PRINCIPAL */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        /* TARJETAS DE ACCESO */
+        .menu-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border-top: 5px solid transparent;
+        }
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .icon-circle {
+            width: 70px; height: 70px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px;
+        }
+        .icon-circle .material-icons { font-size: 36px; }
+
+        /* ESTILOS DE COLOR (Paleta Madera) */
+        
+        /* Verde Oscuro */
+        .card-green { border-color: #144c3c; }
+        .card-green .icon-circle { background: #cedfcd; color: #144c3c; }
+        
+        /* Marrón */
+        .card-brown { border-color: #94745c; }
+        .card-brown .icon-circle { background: #efebe9; color: #94745c; }
+
+        .menu-title { font-size: 1.3rem; font-weight: 700; margin: 0 0 10px 0; color: #144c3c; }
+        .menu-desc { font-size: 0.9rem; color: #5d6b62; margin: 0; line-height: 1.5; }
+
+    </style>
 </head>
-
-
 <body>
 
-<article>
+    <?php include("php/encabezado_madera.php"); ?>
+    <?php include("php/barra_navegacion.php"); ?>
 
-        <!-- ************  HEADER *************** -->
-        <?php include('php/header_admin.php');?>
-
+    <div class="container-admin">
         
-       
+        <div class="logo-header">
+        <img src="Img/img-logo-idealisa" alt="Logo Idealiza" 
 
-        <!-- ************  MENU  *************** -->
-        <?php  include('php/menu_admin.php');
-        ?>
-    
-    <div id="content2">
-        <div id="section">
+style="max-width: 200px; width: 100%; height: auto; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));"> </div>
 
-        <div colo id="clock"></div>
-            <!-- ************  CONTENIDO  *************** -->
-            <h1>Bienvenido al inicio de amdinistrador</h1>
-           <br>
-            <p>En este apartado podras relizar varias acciones las cuales te ayudara a administrar de una mejor manera.</p>
-            <br>
-            <p>Dar de alta, baja y modificar usuarios los que tienen acceso al sistema </p>
-            <p> <a href="adm_usuario.php" class="button2">Usuarios</a></p>
+        <div class="dashboard-grid">
             
-            <br>
-            <p>control de productos</p>
-            <p> <a href="adm_modelos.php" class="button2">Productos</a></p>
-            <br>
-            <p>Consultar inventario</p>
-            <p><button>Inventario</button></p>
-            <br>
-            <p>Control de empleados</p>
-            <p><button>Empleado</button></p>
-            <br>
-           
+            <a href="adm_registros.php" class="menu-card card-green">
+                <div class="icon-circle"><span class="material-icons">query_stats</span></div>
+                <h3 class="menu-title">Monitor de Producción</h3>
+                <p class="menu-desc">Visualiza el flujo de trabajo, valida avances y gestiona el almacén en tiempo real.</p>
+            </a>
 
-            
+            <a href="adm_modelos.php" class="menu-card card-brown">
+                <div class="icon-circle"><span class="material-icons">chair</span></div>
+                <h3 class="menu-title">Catálogo de Modelos</h3>
+                <p class="menu-desc">Administra los diseños, fotos y descripciones de tus muebles.</p>
+            </a>
 
+            <a href="adm_usuarios.php" class="menu-card card-green">
+                <div class="icon-circle"><span class="material-icons">people</span></div>
+                <h3 class="menu-title">Personal y Usuarios</h3>
+                <p class="menu-desc">Gestiona a tus colaboradores, accesos y roles del sistema.</p>
+            </a>
+
+            <a href="adm_registros_registrar.php" class="menu-card card-brown">
+                <div class="icon-circle"><span class="material-icons">add_circle</span></div>
+                <h3 class="menu-title">Registrar Nuevo Lote</h3>
+                <p class="menu-desc">Inicia una nueva orden de producción rápidamente.</p>
+            </a>
 
         </div>
     </div>
-    <div class="wave wave1"> </div>
-    <div class="wave wave2"> </div>
-    <div class="wave wave3"> </div>
-    <div class="wave wave4"> </div>
-     </article>
-    <!-- ************  FOOTER  *************** -->
-    <?php include("php/footer.php"); ?>
-</div>
-   <!-- Extencion para los icnos de redes sociales-->
-   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-     <!-- Extencion para los icnos de redes sociales-->
+
+    <?php include("php/olas.php"); ?>
 
 </body>
 </html>

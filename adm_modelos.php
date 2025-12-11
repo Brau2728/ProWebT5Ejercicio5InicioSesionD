@@ -1,143 +1,193 @@
-<?php session_start();
-//validamos si se ha hecho o no el inicio de sesion correctamente
-//si no se ha hecho la sesion nos regresará a login.php
-    if(!isset($_SESSION['usuario']) || !isset($_SESSION['tipo']) ){
-        echo "Usuario no Logueado";
-        header('Location: login.php'); 
-        exit();
-    }
+<?php
+$page = 'modelos'; // Variable para iluminar el menú
+session_start();
+
+// Validación de sesión
+if(!isset($_SESSION['usuario']) || !isset($_SESSION['tipo'])){
+    header('Location: login.php'); 
+    exit();
+}
+
+include("php/conexion.php");
+
+// Consultar modelos (Usando tu función select o mysqli directo)
+$result = select("modelos");
 ?>
+
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-    <meta name="description" content="Sistemas computacionales">
-    <meta name="keywords" content="MySql, conexión, Wamp">
-    <meta name="author" content="Ramirez Erik, Sistemas">
-
-
-  <title> Amin-Usuarios - Idealiza</title>
-  <link rel="stylesheet" href="css/perfiles.css">
-   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'>
-  <link rel="stylesheet" href="css/estilos_admin.css">
-  <link rel="stylesheet" href="css/menu1.css">
-  <link rel="stylesheet" href="estilos/Wave2.css">
-  <link rel="icon" href="Img/Icons/logo-idealisa.ico" type="image/png">
-    <!-- Fuente Personalizada -->
-   <link rel="stylesheet" href="css/menu.css">
-    <?php include("php/conexion.php"); ?>
- 
-</head>
-
-<body>
-  
-<article>
-        <!-- Incluir el header y el menú -->
-        <?php include('php/header_admin.php'); ?>
-        <?php include('php/menu_admin.php'); ?>
+    <title>Modelos - Idealiza</title>
     
-        <div id="content">
-    <div id="section">
-        <h1>Menú de Modelos</h1>
-        <br>
-        <p><a href="adm_modelos_registrar.php" class="button2">Crear modelo</a></p>
-        <h2>Modelos Existentes</h2>
-<div class="container">
-    <div class="row">
-        <?php
-        $result = select("modelos");
-        if ($result && mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_object($result)) {
-                $imagen_url = $row->modelos_imagen ? $row->modelos_imagen : 'img/logo.jpg'; // URL por defecto si no hay imagen
-        ?>
-               <div class="col-md-4">
-    <div class="card card--profile card--grid d-flex flex-column align-items-stretch h-100">
-        <div class="card__content d-flex flex-column">
-            <div class="card__media">
-                <!-- Imagen del modelo -->
-                <img class="card__img" src="<?php echo $imagen_url; ?>" alt="Imagen del modelo" />
-            </div>
-            <p class="card__name text-truncate mb-0"><?php echo $row->modelos_nombre; ?></p>
-            <p class="card__contact-item text-truncate"><?php echo $row->modelos_descripcion; ?></p>
-            <!-- Nuevos datos -->
-            
-            
-            
-           
-            <!-- Resto de los datos anteriores -->
-            <div class="mt-auto">
-                <a href="adm_modelos_modificar.php?id=<?php echo $row->id_modelos; ?>" class="button btn-block">Modificar</a>
-                <a href="adm_modelos_eliminar.php?id=<?php echo $row->id_modelos; ?>" onclick="return confirmarEliminacion()" class="buttonDelete btn-block">Eliminar</a>
-            </div>
-        </div>
-    </div>
-</div>
-        <?php
-            }
-        } else {
-            echo "No hay ningún registro de modelos";
+    <link rel="stylesheet" href="estilos/Wave2.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+        /* PALETA DE COLORES PERSONALIZADA
+           Marrón: #94745c
+           Verde Claro: #cedfcd
+           Verde Oscuro: #144c3c
+           Gris Verdoso: #5d6b62
+           Verde Salvia: #748579
+        */
+
+        body { font-family: 'Quicksand', sans-serif; background-color: #F0F2F5; padding-bottom: 100px; }
+        .container-models { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+
+        /* ENCABEZADO */
+        .header-action { 
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; 
+            background: white; padding: 20px 30px; border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 6px solid #144c3c; /* Verde Oscuro */
         }
-        ?>
-    </div>
-</div>
+        
+        .title-page { margin: 0; color: #144c3c; font-weight: 700; font-size: 1.8rem; display: flex; align-items: center; gap: 10px; }
+        
+        .btn-add { 
+            background: #144c3c; color: white; text-decoration: none; padding: 12px 25px; 
+            border-radius: 30px; font-weight: bold; display: flex; align-items: center; gap: 8px;
+            transition: 0.3s; box-shadow: 0 4px 10px rgba(20, 76, 60, 0.3);
+        }
+        .btn-add:hover { background: #0f382c; transform: translateY(-2px); }
+
+        /* GRID DE TARJETAS (Sin Bootstrap viejo) */
+        .grid-modelos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Responsivo automático */
+            gap: 30px;
+        }
+
+        /* TARJETA DE MUEBLE */
+        .model-card {
+            background: white; border-radius: 16px; overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: all 0.3s ease;
+            display: flex; flex-direction: column; height: 100%;
+            border-top: 5px solid #94745c; /* Marrón elegante arriba */
+        }
+        .model-card:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.15); }
+
+        /* IMAGEN */
+        .card-img-box {
+            height: 200px; width: 100%; background: #cedfcd; /* Verde claro de fondo por si no carga */
+            position: relative; overflow: hidden;
+        }
+        .card-img-box img {
+            width: 100%; height: 100%; object-fit: cover; /* Mantiene proporción sin estirar */
+            transition: transform 0.5s;
+        }
+        .model-card:hover .card-img-box img { transform: scale(1.05); }
+
+        /* CONTENIDO */
+        .card-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+        
+        .model-title { 
+            margin: 0 0 10px 0; color: #144c3c; font-size: 1.3rem; font-weight: 700; 
+            border-bottom: 2px solid #cedfcd; padding-bottom: 8px;
+        }
+        
+        .model-desc { 
+            color: #5d6b62; /* Gris verdoso */
+            font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px; flex: 1; 
+        }
+
+        /* BOTONES DE ACCIÓN */
+        .card-actions { 
+            display: flex; gap: 10px; margin-top: auto; 
+        }
+        
+        .btn-card {
+            flex: 1; padding: 10px; border-radius: 8px; text-decoration: none; text-align: center;
+            font-weight: bold; font-size: 0.9rem; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 5px;
+        }
+        
+        .btn-edit { 
+            background: #cedfcd; color: #144c3c; /* Verde pálido fondo, texto oscuro */
+        }
+        .btn-edit:hover { background: #b8d6b6; }
+
+        .btn-del { 
+            background: #fff; color: #94745c; border: 1px solid #94745c;
+        }
+        .btn-del:hover { background: #94745c; color: white; }
+
+    </style>
+</head>
+<body>
+
+    <?php include("php/encabezado_madera.php"); ?>
+    <?php include("php/barra_navegacion.php"); ?>
+
+    <div class="container-models">
+        
+        <div class="header-action">
+            <h1 class="title-page">
+                <span class="material-icons" style="font-size: 32px;">chair</span> 
+                Catálogo de Modelos
+            </h1>
+            <a href="adm_modelos_registrar.php" class="btn-add">
+                <span class="material-icons">add_circle</span> Crear Modelo
+            </a>
+        </div>
+
+        <div class="grid-modelos">
+            <?php
+            if ($result && mysqli_num_rows($result) > 0) {
+                while ($row = mysqli_fetch_object($result)) {
+                    // Imagen por defecto si no existe
+                    $imagen_url = !empty($row->modelos_imagen) ? $row->modelos_imagen : 'https://dummyimage.com/600x400/cedfcd/144c3c&text=Sin+Imagen';
+            ?>
+            
+            <div class="model-card">
+                <div class="card-img-box">
+                    <img src="<?php echo $imagen_url; ?>" alt="Foto del mueble">
+                </div>
+                
+                <div class="card-body">
+                    <h3 class="model-title"><?php echo $row->modelos_nombre; ?></h3>
+                    <p class="model-desc">
+                        <?php 
+                        // Recortar texto si es muy largo para que no rompa el diseño
+                        $desc = $row->modelos_descripcion;
+                        echo (strlen($desc) > 80) ? substr($desc, 0, 80) . '...' : $desc; 
+                        ?>
+                    </p>
+                    
+                    <div class="card-actions">
+                        <a href="adm_modelos_modificar.php?id=<?php echo $row->id_modelos; ?>" class="btn-card btn-edit">
+                            <span class="material-icons" style="font-size:16px">edit</span> Editar
+                        </a>
+                        <a href="#" onclick="confirmarBorrado(<?php echo $row->id_modelos; ?>)" class="btn-card btn-del">
+                            <span class="material-icons" style="font-size:16px">delete</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <?php 
+                } // Fin While
+            } else {
+                echo "<p style='width:100%; text-align:center; color:#748579; font-size:1.2rem; grid-column: 1 / -1;'>
+                        <span class='material-icons' style='font-size:40px; display:block; margin-bottom:10px;'>inventory_2</span>
+                        No hay modelos registrados aún.
+                      </p>";
+            } 
+            ?>
+        </div>
 
     </div>
-</div>
-<div class="wave wave1"> </div>
-    <div class="wave wave2"> </div>
-    <div class="wave wave3"> </div>
-    <div class="wave wave4"> </div>
-     </article>
-    <!-- ************  FOOTER  *************** -->
-    <?php include("php/footer.php"); ?>
-</div>
-<script>
-  function confirmarEliminacion() {
-    if (confirm("¿Realmente desea eliminar el registro?")) {
-      return true;
-    }
-    return false;
-  }
-</script>
 
- <!-- Extencion para los icnos de redes sociales-->
- <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-     <!-- Extencion para los icnos de redes sociales-->
-     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js'></script>
+    <?php include("php/olas.php"); ?>
 
-    <script> $(document).ready(function() {
-    function setCardSizes() {
-        $('.row--flex').each(function() {
-            var cards = $(this).find('.card--profile');
-            var maxHeight = 0;
+    <script>
+        function confirmarBorrado(id) {
+            if(confirm("¿Estás seguro de eliminar este modelo? Se borrarán también los registros de producción asociados.")) {
+                window.location.href = "adm_modelos_eliminar.php?id=" + id;
+            }
+        }
+    </script>
 
-            cards.css('height', 'auto'); // Restablecer la altura a 'auto'
-
-            // Obtener la altura máxima de las tarjetas en la fila
-            cards.each(function() {
-                maxHeight = Math.max(maxHeight, $(this).outerHeight());
-            });
-
-            // Establecer la altura máxima para todas las tarjetas en esa fila
-            cards.css('height', maxHeight);
-        });
-    }
-
-    // Llama a la función para establecer el tamaño al cargar la página y al cambiar el tamaño de la ventana
-    setCardSizes();
-    $(window).resize(setCardSizes);
-});</script>
-   
 </body>
 </html>
