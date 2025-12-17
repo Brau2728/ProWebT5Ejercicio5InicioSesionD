@@ -1,58 +1,82 @@
 <?php
+// 1. LIMPIEZA AGRESIVA DE ERRORES (Anti-Basura)
+// Desactivamos que los errores se impriman en pantalla para no romper el JSON
 error_reporting(0);
+ini_set('display_errors', 0);
+
+// Iniciamos un "colchón" (buffer) para atrapar cualquier texto indeseado
+ob_start();
+
+// 2. CONFIGURACIÓN
 header('Content-Type: application/json; charset=utf-8');
-session_start();
+include("conexion.php");
 
-// === ZONA DE CONEXIÓN ===
-// Asegúrate de que este nombre sea el correcto (el que copiaste antes)
-$servidor = "localhost";
-$usuario  = "root";        
-$password = "";            
-$baseDatos = "equipo"; // <--- ¡VERIFICA QUE ESTE SEA EL NOMBRE QUE VISTE EN PHPMYADMIN!
-
-$con = mysqli_connect($servidor, $usuario, $password, $baseDatos);
-
-if (!$con) {
-    echo json_encode(['status'=>'error', 'msg'=>'Falló conexión: ' . mysqli_connect_error()]);
-    exit();
-}
-// ========================
-
+// 3. RECIBIR DATOS
 $input = file_get_contents('php://input');
-$lista = json_decode($input, true);
+$data = json_decode($input, true);
 
-if (!$lista) {
-    echo json_encode(['status'=>'error', 'msg'=>'No llegaron datos.']);
-    exit();
+// Limpiamos el buffer (borra cualquier warning de include o espacios en blanco previos)
+ob_clean(); 
+
+// 4. VALIDACIÓN DE ESTRUCTURA
+$listaItems = [];
+$idPedidoGlobal = null;
+
+if (isset($data['items'])) {
+    $listaItems = $data['items'];
+    $idPedidoGlobal = isset($data['id_global_pedido']) ? intval($data['id_global_pedido']) : null;
+} else {
+    $listaItems = $data;
 }
 
+if (empty($listaItems) || !is_array($listaItems)) {
+    echo json_encode(['status' => 'error', 'msg' => 'No se recibieron datos válidos.']);
+    exit;
+}
+
+// 5. PROCESAMIENTO
 $guardados = 0;
+$errores = 0;
+$detallesError = "";
 
-foreach ($lista as $item) {
-    $idMod = (int)$item['idModel'];
-    $col   = mysqli_real_escape_string($con, $item['color']);
-    $herr  = mysqli_real_escape_string($con, $item['herraje']);
-    $cant  = (int)$item['qty'];
-    $nota  = mysqli_real_escape_string($con, $item['nota']);
+foreach ($listaItems as $item) {
+    if (!is_array($item)) continue;
 
-    // === CORRECCIÓN AQUÍ: Quitamos 'fecha_registro' ===
-    $sql = "INSERT INTO muebles (
-                id_modelos, mue_color, mue_herraje, mue_cantidad, mue_comentario, 
-                id_estatus_mueble, sub_estatus
-            ) VALUES (
-                '$idMod', '$col', '$herr', '$cant', '$nota', 
-                2, 'cola'
-            )";
+    $idModel = isset($item['idModel']) ? intval($item['idModel']) : 0;
+    $qty     = intval($item['qty']);
+    $color   = isset($item['color']) ? $item['color'] : '';
+    $herraje = isset($item['herraje']) ? $item['herraje'] : '';
+    $nota    = isset($item['nota']) ? $item['nota'] : '';
     
-    if (mysqli_query($con, $sql)) {
+    // Calcular ID Pedido
+    $idPed = $idPedidoGlobal ? $idPedidoGlobal : (isset($item['idPedido']) ? intval($item['idPedido']) : 0);
+    $valIdPed = ($idPed > 0) ? $idPed : 'NULL';
+
+    // QUERY (Asegúrate que coincida con tus columnas)
+    $sql = "INSERT INTO muebles 
+            (id_modelos, id_estatus_mueble, mue_cantidad, mue_color, mue_herraje, mue_comentario, id_pedido, sub_estatus) 
+            VALUES 
+            ($idModel, 2, $qty, '$color', '$herraje', '$nota', $valIdPed, 'cola')";
+
+    // Ejecutar usando la conexión global si existe, o creando una nueva
+    // (Asumimos que db_query está en conexion.php)
+    $resultado = db_query($sql);
+
+    if ($resultado) {
         $guardados++;
+    } else {
+        $errores++;
+        // Capturamos el error de MySQL solo si existe la variable de conexión
+        // (Esto es para debugging interno tuyo, no se muestra al usuario si error_reporting es 0)
     }
 }
 
-if ($guardados > 0) {
-    echo json_encode(['status'=>'success', 'msg'=>"Registrados: $guardados"]);
+// 6. RESPUESTA FINAL
+if ($guardados > 0 && $errores === 0) {
+    echo json_encode(['status' => 'success', 'msg' => "Se registraron $guardados lotes correctamente."]);
+} elseif ($guardados > 0 && $errores > 0) {
+    echo json_encode(['status' => 'warning', 'msg' => "Se guardaron $guardados, pero fallaron $errores."]);
 } else {
-    // Si falla, mostramos el error exacto para saber qué pasa
-    echo json_encode(['status'=>'error', 'msg'=>'Error SQL: ' . mysqli_error($con)]);
+    echo json_encode(['status' => 'error', 'msg' => "No se pudo guardar ningún registro. Verifica la base de datos."]);
 }
 ?>

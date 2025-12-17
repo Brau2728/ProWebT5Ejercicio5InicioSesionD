@@ -1,111 +1,125 @@
 <?php
-// Aseguramos que $page esté definido para evitar errores de "Undefined variable"
+// Aseguramos que $page esté definido para evitar errores
 if (!isset($page)) { $page = ''; }
 ?>
 
-<!-- Estilos Específicos de la Barra (Inline para evitar caché) -->
 <style>
-    /* Variables de color basadas en tu identidad */
+    /* === ESTILOS DE BARRA DE NAVEGACIÓN IDEALISA === */
     :root {
-        --nav-bg-color: #ffffff;
-        --nav-text-color: #333333;
-        --nav-hover-bg: #f4f6f8;
-        --nav-active-color: #144c3c; /* Verde Idealisa */
-        --nav-border-color: #e0e0e0;
-        --nav-accent: #94745c; /* Marrón */
+        --nav-bg: #ffffff;
+        --nav-text: #2b3674;
+        --nav-hover: #F4F7FE;
+        --primary-green: #144c3c;
+        --accent-brown: #94745c;
+        --logout-red: #d32f2f;
+        --logout-bg: #ffebee;
     }
 
     /* Contenedor Principal */
     .idealisa-navbar {
-        background-color: var(--nav-bg-color);
-        height: 70px;
+        background-color: var(--nav-bg);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        height: 80px;
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0 20px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        border-bottom: 1px solid var(--nav-border-color);
+        padding: 0 30px;
         position: sticky;
         top: 0;
         z-index: 1000;
         box-sizing: border-box;
         font-family: 'Quicksand', sans-serif;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
     }
 
-    /* Marca / Logo */
-    .nav-brand-area {
+    /* 1. ÁREA DE MARCA (LOGO) */
+    .nav-brand {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 15px;
         text-decoration: none;
     }
 
     .nav-logo-img {
-        height: 45px;
+        height: 50px; /* Ajusta según tu logo */
         width: auto;
         object-fit: contain;
     }
 
     .nav-brand-text {
         font-family: 'Outfit', sans-serif;
-        font-weight: 700;
-        font-size: 1.3rem;
-        color: var(--nav-active-color);
+        font-weight: 800;
+        font-size: 1.4rem;
+        color: var(--primary-green);
         letter-spacing: 0.5px;
         text-transform: uppercase;
+        display: flex;
+        flex-direction: column;
+        line-height: 1;
+    }
+    
+    .nav-brand-sub {
+        font-size: 0.75rem;
+        color: var(--accent-brown);
+        font-weight: 600;
+        letter-spacing: 2px;
+        margin-top: 2px;
     }
 
-    /* Enlaces de Navegación (Desktop) */
-    .nav-links-area {
+    /* 2. ENLACES DE NAVEGACIÓN */
+    .nav-links-container {
         display: flex;
-        gap: 5px;
+        gap: 10px;
         height: 100%;
         align-items: center;
     }
 
-    .nav-item-link {
+    .nav-link {
         text-decoration: none;
-        color: var(--nav-text-color);
-        padding: 10px 18px;
-        border-radius: 8px;
+        color: var(--nav-text);
         font-weight: 600;
         font-size: 0.95rem;
-        transition: all 0.2s ease;
+        padding: 10px 18px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         gap: 8px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
     }
 
-    /* Efecto Hover */
-    .nav-item-link:hover {
-        background-color: var(--nav-hover-bg);
-        color: var(--nav-active-color);
+    /* ANIMACIÓN: Hover General */
+    .nav-link:hover {
+        background-color: var(--nav-hover);
+        color: var(--primary-green);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(20, 76, 60, 0.1);
     }
 
-    /* Estado Activo */
-    .nav-item-link.active {
-        background-color: #e8f5e9; /* Verde muy claro */
-        color: var(--nav-active-color);
+    /* Estado Activo (Página Actual) */
+    .nav-link.active {
+        background-color: #E8F5E9; /* Verde muy claro */
+        color: var(--primary-green);
         font-weight: 700;
     }
-    
-    /* Iconos Material */
-    .nav-icon {
-        font-size: 20px;
-        /* Ajuste vertical */
-        display: flex; 
-        align-items: center;
+
+    /* ANIMACIÓN: Icono Zoom */
+    .nav-link span.material-icons-round {
+        font-size: 22px;
+        transition: transform 0.3s ease;
+    }
+    .nav-link:hover span.material-icons-round {
+        transform: scale(1.2);
     }
 
-    /* Área de Usuario */
+    /* 3. ÁREA DE USUARIO Y SALIR */
     .nav-user-area {
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 20px;
         padding-left: 20px;
-        border-left: 1px solid var(--nav-border-color);
+        border-left: 1px solid #eee;
         height: 40px;
     }
 
@@ -113,151 +127,102 @@ if (!isset($page)) { $page = ''; }
         text-align: right;
         line-height: 1.2;
     }
-    .user-name {
-        font-weight: 700;
-        font-size: 0.9rem;
-        color: #333;
-    }
-    .user-role {
-        font-size: 0.75rem;
-        color: var(--nav-accent);
-        font-weight: 600;
-    }
+    .user-name { font-weight: 700; font-size: 0.9rem; color: #333; }
+    .user-role { font-size: 0.75rem; color: var(--accent-brown); font-weight: 600; text-transform: uppercase; }
 
-    .btn-logout-nav {
-        color: #d32f2f;
+    /* BOTÓN SALIR (Logout) */
+    .btn-logout {
+        color: #74777F;
         text-decoration: none;
-        padding: 8px;
+        padding: 10px;
         border-radius: 50%;
-        transition: 0.2s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .btn-logout-nav:hover {
-        background-color: #ffebee;
+        transition: all 0.3s ease;
+        display: flex; align-items: center; justify-content: center;
     }
 
-    /* RESPONSIVE (Móvil) */
-    .mobile-menu-btn {
-        display: none;
-        background: none;
-        border: none;
-        font-size: 24px;
-        color: var(--nav-active-color);
-        cursor: pointer;
+    /* ANIMACIÓN SALIR: Rojo + Shake + Rotación */
+    .btn-logout:hover {
+        background-color: var(--logout-bg);
+        color: var(--logout-red);
+        box-shadow: 0 4px 15px rgba(211, 47, 47, 0.2);
+        animation: shake 0.5s ease-in-out;
+    }
+    
+    .btn-logout:hover span.material-icons-round {
+        transform: rotate(90deg);
     }
 
-    @media (max-width: 992px) {
-        .nav-links-area {
-            display: none; /* Ocultar menú normal */
-            position: absolute;
-            top: 70px;
-            left: 0;
-            width: 100%;
-            background: white;
-            flex-direction: column;
-            padding: 20px;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-            height: auto;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .nav-links-area.show-mobile {
-            display: flex; /* Mostrar al activar JS */
-        }
+    @keyframes shake {
+        0% { transform: translateX(0); }
+        25% { transform: translateX(-3px); }
+        50% { transform: translateX(3px); }
+        75% { transform: translateX(-3px); }
+        100% { transform: translateX(0); }
+    }
 
-        .nav-item-link {
-            width: 100%;
-            padding: 15px;
-            justify-content: flex-start;
-        }
-
-        .nav-user-area {
-            display: none; /* Simplificar header en móvil */
-        }
-        
-        .mobile-menu-btn {
-            display: block;
-        }
-        
-        .nav-brand-text {
-            font-size: 1.1rem;
-        }
+    /* Responsive (Ocultar textos en pantallas pequeñas) */
+    @media (max-width: 1100px) {
+        .nav-link span:not(.material-icons-round) { display: none; }
+        .nav-link { padding: 10px; }
+        .nav-brand-text { display: none; }
     }
 </style>
 
-<!-- HTML DE LA BARRA -->
 <nav class="idealisa-navbar">
     
-    <!-- 1. LOGO -->
-    <a href="adm_index.php" class="nav-brand-area">
-        <img src="Img/img-logo-idealisa.png" alt="Logo" class="nav-logo-img" onerror="this.style.display='none'">
-        <span class="nav-brand-text">IDEALISA ERP</span>
+    <a href="adm_index.php" class="nav-brand">
+        <img src="Img/img-logo-idealisa.png" alt="Idealisa" class="nav-logo-img" onerror="this.style.display='none'">
+        <div class="nav-brand-text">
+            IDEALISA
+            <span class="nav-brand-sub">ADMIN</span>
+        </div>
     </a>
 
-    <!-- Botón Móvil -->
-    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-        <span class="material-icons-round">menu</span>
-    </button>
-
-    <!-- 2. ENLACES (Menú Central) -->
-    <div class="nav-links-area" id="navLinks">
+    <div class="nav-links-container">
         
-        <a href="adm_index.php" class="nav-item-link <?php echo ($page=='inicio') ? 'active' : ''; ?>">
-            <span class="material-icons-round nav-icon">dashboard</span>
+        <a href="adm_index.php" class="nav-link <?php echo ($page=='inicio') ? 'active' : ''; ?>" title="Inicio">
+            <span class="material-icons-round">dashboard</span>
             <span>Inicio</span>
         </a>
 
-        <a href="adm_modelos.php" class="nav-item-link <?php echo ($page=='modelos') ? 'active' : ''; ?>">
-            <span class="material-icons-round nav-icon">chair</span>
+        <a href="adm_modelos.php" class="nav-link <?php echo ($page=='modelos') ? 'active' : ''; ?>" title="Catálogo de Productos">
+            <span class="material-icons-round">chair</span>
             <span>Catálogo</span>
         </a>
 
-        <a href="adm_registros.php" class="nav-item-link <?php echo ($page=='monitor') ? 'active' : ''; ?>">
-            <span class="material-icons-round nav-icon">analytics</span>
-            <span>Monitor Planta</span>
+        <a href="adm_registros.php" class="nav-link <?php echo ($page=='monitor') ? 'active' : ''; ?>" title="Monitor de Producción">
+            <span class="material-icons-round">analytics</span>
+            <span>Monitoreo Planta</span>
         </a>
 
-        <a href="adm_pedidos.php" class="nav-item-link <?php echo ($page=='pedidos') ? 'active' : ''; ?>">
-            <span class="material-icons-round nav-icon">receipt_long</span>
+        <a href="adm_pedidos.php" class="nav-link <?php echo ($page=='pedidos') ? 'active' : ''; ?>" title="Gestión de Pedidos">
+            <span class="material-icons-round">receipt_long</span>
             <span>Pedidos</span>
         </a>
 
-        <a href="adm_usuarios.php" class="nav-item-link <?php echo ($page=='personal') ? 'active' : ''; ?>">
-            <span class="material-icons-round nav-icon">groups</span>
+        <a href="adm_nomina.php" class="nav-link <?php echo ($page=='nomina') ? 'active' : ''; ?>" title="Nómina y Pagos">
+            <span class="material-icons-round">payments</span>
+            <span>Nómina</span>
+        </a>
+
+        <?php if(isset($_SESSION['tipo']) && $_SESSION['tipo'] == 'admin'): ?>
+        <a href="adm_usuarios.php" class="nav-link <?php echo ($page=='personal') ? 'active' : ''; ?>" title="Gestión de Personal">
+            <span class="material-icons-round">groups</span>
             <span>Personal</span>
         </a>
+        <?php endif; ?>
 
-        <!-- En móvil mostramos salir aquí -->
-        <a href="logout.php" class="nav-item-link" style="color:#d32f2f; margin-top:10px; border-top:1px solid #eee;" id="mobileLogout">
-            <span class="material-icons-round nav-icon">logout</span>
-            <span>Cerrar Sesión</span>
-        </a>
     </div>
 
-    <!-- 3. USUARIO (Derecha) -->
     <div class="nav-user-area">
         <div class="user-info">
-            <div class="user-name"><?php echo isset($_SESSION['usuario']) ? $_SESSION['usuario'] : 'Usuario'; ?></div>
-            <div class="user-role"><?php echo isset($_SESSION['tipo']) ? ucfirst($_SESSION['tipo']) : 'Staff'; ?></div>
+            <div class="user-name"><?php echo isset($_SESSION['usuario']) ? htmlspecialchars($_SESSION['usuario']) : 'Usuario'; ?></div>
+            <div class="user-role"><?php echo isset($_SESSION['tipo']) ? htmlspecialchars($_SESSION['tipo']) : 'Staff'; ?></div>
         </div>
-        <a href="logout.php" class="btn-logout-nav" title="Salir">
-            <span class="material-icons-round">logout</span>
+        
+        <a href="logout.php" class="btn-logout" title="Cerrar Sesión">
+            <span class="material-icons-round" style="font-size:24px;">logout</span>
         </a>
     </div>
 
 </nav>
-
-<!-- Script simple para menú móvil -->
-<script>
-    function toggleMobileMenu() {
-        var menu = document.getElementById('navLinks');
-        menu.classList.toggle('show-mobile');
-    }
-    
-    // Ocultar botón salir duplicado en desktop
-    if(window.innerWidth > 992) {
-        document.getElementById('mobileLogout').style.display = 'none';
-    }
-</script>
